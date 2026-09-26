@@ -77,6 +77,7 @@ ${noindex ? '<meta name="robots" content="noindex">' : `<link rel="canonical" hr
 <link rel="manifest" href="${root}manifest.webmanifest">
 <script>try{var t=localStorage.getItem('cb_theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <link rel="stylesheet" href="${root}${assets['style.css']}">
+<script defer src="/_vercel/insights/script.js"></script>
 ${jsonld ? `<script type="application/ld+json">${JSON.stringify(jsonld)}</script>` : ''}
 <!-- ADSENSE (head): after approval, paste your AdSense script here:
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
@@ -221,7 +222,7 @@ const info = {
 </ul>
 <p>Where required by law (for example, for visitors in the EEA or UK), you will be asked for consent before personalised ads are shown.</p>
 <h2>Analytics and logs</h2>
-<p>Our hosting provider may keep standard server logs (such as IP address and browser type) for security and performance.</p>
+<p>We use Vercel Web Analytics to count visits and see which calculators are popular. It does not use cookies and does not identify you personally. Our hosting provider may also keep standard server logs (such as IP address and browser type) for security and performance.</p>
 <h2>Children</h2>
 <p>CalcBox is not directed at children under 13 and does not knowingly collect their personal information.</p>
 <h2>Changes</h2>
