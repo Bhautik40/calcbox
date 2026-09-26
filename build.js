@@ -10,7 +10,7 @@ const path = require('path');
 const crypto = require('crypto');
 
 /* ===== CONFIG ===== */
-const SITE_URL = 'https://mycalcbox.in';   // <- change to your domain (no trailing slash)
+const SITE_URL = 'https://www.mycalcbox.in';   // <- change to your domain (no trailing slash)
 const CONTACT_EMAIL = 'bhautiksondrava@gmail.com';         // <- change to your email
 const YEAR = new Date().getFullYear();
 const UPDATED = '26 September 2026';

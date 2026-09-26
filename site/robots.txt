@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://mycalcbox.in/sitemap.xml
+Sitemap: https://www.mycalcbox.in/sitemap.xml
