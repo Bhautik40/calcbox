@@ -69,7 +69,9 @@ ${noindex ? '<meta name="robots" content="noindex">' : `<link rel="canonical" hr
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#fafaf8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0e0e0d" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="${root}favicon.ico" sizes="48x48">
 <link rel="icon" href="${root}favicon.svg" type="image/svg+xml">
+<link rel="icon" href="${root}favicon-48.png" type="image/png" sizes="48x48">
 <link rel="apple-touch-icon" href="${root}apple-touch-icon.png">
 <link rel="manifest" href="${root}manifest.webmanifest">
 <script>try{var t=localStorage.getItem('cb_theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
@@ -271,7 +273,7 @@ write('favicon.svg', `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32
 write('manifest.webmanifest', JSON.stringify({
   name: 'CalcBox', short_name: 'CalcBox', description: 'Quick calculators. Instant answers.', start_url: '/', display: 'standalone',
   background_color: '#fafaf8', theme_color: '#E4570B',
-  icons: [{ src: '/favicon.svg', sizes: 'any', type: 'image/svg+xml' }, { src: '/icon-512.png', sizes: '512x512', type: 'image/png' }]
+  icons: [{ src: '/favicon.svg', sizes: 'any', type: 'image/svg+xml' }, { src: '/icon-192.png', sizes: '192x192', type: 'image/png' }, { src: '/icon-512.png', sizes: '512x512', type: 'image/png' }]
 }, null, 2));
 const urls = ['', ...tools.map(t => t.slug + '/'), ...Object.keys(info).map(s => s + '/')];
 write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
