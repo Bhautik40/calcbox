@@ -21,6 +21,7 @@ const OUT = path.join(__dirname, SPA ? 'spa' : PREVIEW ? 'preview' : 'site');
 const VIEWS = [];
 const IX = PREVIEW ? 'index.html' : '';
 const C = require('./src/core.js');
+const FAQS = require('./src/faqs.js');
 const { esc, svg, tools, cats, icons, ui } = C;
 
 function write(rel, content) {
@@ -174,16 +175,20 @@ ${ad('below-result')}
 </div>
 </div>
 <p class="how"><b>How it works</b>${esc(t.how)}</p>
+${(FAQS[t.id] || []).length ? `<section class="faq" aria-labelledby="h-faq"><h2 id="h-faq">FAQs</h2>${FAQS[t.id].map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('')}</section>` : ''}
 ${ad('in-content')}
 <section class="related" aria-labelledby="h-rel"><h2 id="h-rel">Related tools</h2><div class="chips">${rel}</div></section>
 </main>`;
   write(t.slug + '/index.html', page({
     title: t.title, desc: t.meta, canon: t.slug + '/', root, body, pageType: 'tool', toolId: t.id,
-    jsonld: {
+    jsonld: [{
       '@context': 'https://schema.org', '@type': 'WebApplication', name: t.h1, url: SITE_URL + '/' + t.slug + '/',
       description: t.meta, applicationCategory: t.cat === 'money' ? 'FinanceApplication' : t.cat === 'health' ? 'HealthApplication' : 'UtilitiesApplication',
       operatingSystem: 'Any', isAccessibleForFree: true, offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' }
-    }
+    }].concat((FAQS[t.id] || []).length ? [{
+      '@context': 'https://schema.org', '@type': 'FAQPage',
+      mainEntity: FAQS[t.id].map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } }))
+    }] : [])
   }));
 }
 

@@ -90,6 +90,7 @@
 
   /* ---------- icons (24px line) ---------- */
   var I = {
+    tax: '<rect x="4.5" y="3" width="15" height="18" rx="2"/><path d="M8.5 7.5h7M8.5 7.5h2a2.5 2.5 0 010 5h-2l4 4M8.5 10h7"/>',
     gst: '<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9.5 14l5-5"/><circle cx="9.7" cy="9.3" r=".9"/><circle cx="14.3" cy="13.7" r=".9"/>',
     emi: '<path d="M3 11l9-7 9 7"/><path d="M5 9.5V20h14V9.5"/><path d="M10 20v-5h4v5"/>',
     sip: '<path d="M12 21v-8"/><path d="M12 13c0-4 3-6.5 7-6.5 0 4-3 6.5-7 6.5z"/><path d="M12 15.5c0-3.2-2.2-5.5-6-5.5 0 3.2 2.2 5.5 6 5.5z"/>',
@@ -150,7 +151,7 @@
       meta: 'Free GST calculator for India. Add or remove GST at 5%, 18%, 40% or 3% and see the CGST and SGST split instantly.',
       kw: 'tax gst goods services cgst sgst igst invoice inclusive exclusive', disc: FIN,
       how: 'Add: GST = amount × rate. Remove: base = amount ÷ (1 + rate). CGST and SGST are half each.',
-      related: ['discount', 'profit', 'percentage', 'words'],
+      related: ['tax', 'discount', 'profit', 'words'],
       inputs: [
         { k: 'a', t: 'num', label: 'Amount', pre: '₹', val: '10000' },
         { k: 'r', t: 'seg', label: 'GST rate', val: '18', opts: [['5', '5%'], ['18', '18%'], ['40', '40%'], ['3', '3%'], ['c', 'Other']] },
@@ -166,6 +167,52 @@
           label: lab, big: inr2(add ? total : base), sub: sub(add ? total : base),
           rows: [['Amount before GST', inr2(base)], ['GST (' + num(rate) + '%)', inr2(gst)], ['CGST (' + num(rate / 2) + '%)', inr2(gst / 2)], ['SGST (' + num(rate / 2) + '%)', inr2(gst / 2)], ['IGST (inter-state)', inr2(gst)], ['Total incl. GST', inr2(total)]],
           bars: [{ l: 'Base', v: base }, { l: 'GST', v: gst }]
+        };
+      }
+    },
+    {
+      id: 'tax', slug: 'income-tax-calculator', cat: 'money', name: 'Income Tax', h1: 'Income Tax Calculator', desc: 'New vs old regime',
+      title: 'Income Tax Calculator FY 2026-27 – New vs Old Regime | CalcBox',
+      meta: 'Calculate income tax for FY 2026-27 (AY 2027-28) under the new and old regime. See which regime saves more, with 87A rebate, cess and surcharge.',
+      kw: 'income tax itr new regime old regime salary tax slab 87a rebate fy 2026-27 ay 2027-28 standard deduction 80c', disc: 'Estimate for resident individuals, FY 2026-27. Check with a CA before filing.',
+      how: 'New regime: ₹75,000 standard deduction, slabs from 5% to 30%, no tax up to ₹12 lakh taxable (87A). Old regime: ₹50,000 standard deduction plus your deductions. 4% cess on both.',
+      related: ['hike', 'gratuity', 'ppf', 'gst'],
+      inputs: [
+        { k: 'i', t: 'num', label: 'Annual income (CTC / gross)', pre: '₹', val: '1500000' },
+        { k: 's', t: 'check', label: 'Salaried or pensioner', val: true },
+        { k: 'd', t: 'num', label: 'Deductions for old regime (80C, HRA…)', pre: '₹', val: '150000' },
+        { k: 'a', t: 'seg', label: 'Age', val: 'n', opts: [['n', 'Below 60'], ['s', '60–79'], ['ss', '80+']] }
+      ],
+      calc: function (v) {
+        var e = need(v.i >= 0, 'Income tax', 'Enter your annual income'); if (e) return e;
+        var ded = isFinite(v.d) && v.d > 0 ? v.d : 0;
+        function slab(x, sl) { var t = 0, prev = 0; for (var k = 0; k < sl.length; k++) { var lim = sl[k][0], r = sl[k][1]; if (x > prev) t += (Math.min(x, lim) - prev) * r; prev = lim; } return t; }
+        var NEW = [[4e5, 0], [8e5, .05], [12e5, .10], [16e5, .15], [20e5, .20], [24e5, .25], [Infinity, .30]];
+        var OLDB = v.a === 'ss' ? 5e5 : v.a === 's' ? 3e5 : 2.5e5;
+        var OLD = [[OLDB, 0], [5e5, .05], [10e5, .20], [Infinity, .30]];
+        function sur(x, base, sl, cap) {
+          var th = [[5e7, cap ? .25 : .37], [2e7, .25], [1e7, .15], [5e6, .10]];
+          for (var k = 0; k < th.length; k++) {
+            if (x > th[k][0]) {
+              var r = th[k][1], prevR = k + 1 < th.length ? th[k + 1][1] : 0;
+              if (cap && th[k][0] === 5e7) prevR = .25;
+              var full = base * (1 + r), lim = slab(th[k][0], sl) * (1 + prevR) + (x - th[k][0]);
+              return Math.max(0, Math.min(full, lim) - base);
+            }
+          }
+          return 0;
+        }
+        var tn = Math.max(0, v.i - (v.s ? 75000 : 0)), xn = slab(tn, NEW);
+        if (tn <= 12e5) xn = 0; else xn = Math.min(xn, tn - 12e5);
+        xn += sur(tn, xn, NEW, true); var newTax = xn * 1.04;
+        var to = Math.max(0, v.i - (v.s ? 50000 : 0) - ded), xo = slab(to, OLD);
+        if (to <= 5e5) xo = Math.max(0, xo - 12500);
+        xo += sur(to, xo, OLD, false); var oldTax = xo * 1.04;
+        var best = newTax <= oldTax ? 'New' : 'Old', lo = Math.min(newTax, oldTax);
+        return {
+          label: 'Tax payable · ' + best + ' regime is better', big: inr(Math.round(lo)), sub: Math.abs(newTax - oldTax) >= 1 ? 'You save ' + inr(Math.round(Math.abs(newTax - oldTax))) + ' with the ' + best.toLowerCase() + ' regime' : 'Same tax in both regimes',
+          rows: [['New regime tax', inr(Math.round(newTax))], ['Old regime tax', inr(Math.round(oldTax))], ['Taxable income (new)', inr(tn)], ['Taxable income (old)', inr(to)], ['Monthly tax (' + best.toLowerCase() + ')', inr(Math.round(lo / 12))], ['Effective tax rate', pct(v.i ? lo / v.i * 100 : 0)], ['In-hand per month (approx.)', inr(Math.round((v.i - lo) / 12))]],
+          bars: [{ l: 'In hand', v: v.i - lo }, { l: 'Tax', v: lo }]
         };
       }
     },
@@ -390,7 +437,7 @@
       meta: 'Calculate your new salary after an appraisal hike, or find the hike percentage from your old and new salary.',
       kw: 'salary hike increment appraisal ctc raise pay', disc: null,
       how: 'New salary = current × (1 + hike %). Hike % = (new − current) ÷ current × 100.',
-      related: ['percentage', 'inflation', 'gratuity', 'profit'],
+      related: ['tax', 'percentage', 'inflation', 'gratuity'],
       inputs: [
         { k: 'c', t: 'num', label: 'Current salary (yearly)', pre: '₹', val: '800000' },
         { k: 'm', t: 'seg', label: 'Find', val: 'p', opts: [['p', 'New salary'], ['n', 'Hike %']] },
@@ -430,7 +477,7 @@
       meta: 'Estimate your gratuity from last drawn basic salary plus DA and years of service, as per the Payment of Gratuity Act formula.',
       kw: 'gratuity job resignation retirement basic salary da service', disc: FIN,
       how: 'Covered: 15 × salary × years ÷ 26 (6+ months rounds up). Not covered: 15 × salary × completed years ÷ 30.',
-      related: ['hike', 'ppf', 'inflation', 'fd'],
+      related: ['tax', 'hike', 'ppf', 'inflation'],
       inputs: [
         { k: 's', t: 'num', label: 'Monthly basic + DA', pre: '₹', val: '50000' },
         { k: 'y', t: 'num', label: 'Service', suf: 'years', val: '10', half: true },
