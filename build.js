@@ -97,7 +97,7 @@ function footer(root) {
 <div class="foot-grid">${groups}</div>
 <div class="foot-bottom"><span>© ${YEAR} CalcBox · Quick calculators. Instant answers.</span>
 <nav class="foot-links" aria-label="Site"><a href="${link(root, 'about')}">About</a><a href="${link(root, 'privacy-policy')}">Privacy Policy</a><a href="${link(root, 'contact')}">Contact</a><a href="${link(root, 'terms')}">Terms</a></nav></div>
-<p class="made">Made with <span class="heart" aria-label="love">❤️</span> by Bhautik</p>
+<p class="made">Made with <span class="heart" aria-label="love">❤️</span> by Bhautik &amp; Niraj</p>
 </div></footer>`;
 }
 

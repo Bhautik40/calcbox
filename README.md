@@ -1,6 +1,6 @@
 # CalcBox
 
-Quick calculators. Instant answers. A static site with 32 calculators. It has no build dependencies, no framework and no sign-up.
+Quick calculators. Instant answers. A static site with 31 calculators. It has no build dependencies, no framework and no sign-up.
 
 ## Folders
 - `site/`: the finished website. Deploy this folder.
