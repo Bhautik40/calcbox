@@ -3,12 +3,18 @@
   <url><loc>https://www.mycalcbox.in/</loc><changefreq>monthly</changefreq><priority>1.0</priority></url>
   <url><loc>https://www.mycalcbox.in/gst-calculator/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.mycalcbox.in/income-tax-calculator/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.mycalcbox.in/hra-calculator/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.mycalcbox.in/emi-calculator/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.mycalcbox.in/home-loan-eligibility-calculator/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.mycalcbox.in/loan-prepayment-calculator/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.mycalcbox.in/sip-calculator/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.mycalcbox.in/lumpsum-calculator/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.mycalcbox.in/fd-calculator/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.mycalcbox.in/rd-calculator/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.mycalcbox.in/ppf-calculator/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.mycalcbox.in/epf-calculator/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.mycalcbox.in/nps-calculator/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.mycalcbox.in/sukanya-samriddhi-calculator/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.mycalcbox.in/simple-interest-calculator/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.mycalcbox.in/compound-interest-calculator/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.mycalcbox.in/cagr-calculator/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
@@ -87,6 +93,12 @@
   <url><loc>https://www.mycalcbox.in/ppf-calculator/1-5-lakh-per-year/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.mycalcbox.in/ppf-calculator/1-lakh-per-year/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.mycalcbox.in/ppf-calculator/50000-per-year/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.mycalcbox.in/home-loan-eligibility-calculator/30000-salary/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.mycalcbox.in/home-loan-eligibility-calculator/40000-salary/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.mycalcbox.in/home-loan-eligibility-calculator/50000-salary/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.mycalcbox.in/home-loan-eligibility-calculator/60000-salary/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.mycalcbox.in/home-loan-eligibility-calculator/75000-salary/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.mycalcbox.in/home-loan-eligibility-calculator/100000-salary/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.mycalcbox.in/unit-converter/acre-to-sq-ft/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.mycalcbox.in/unit-converter/guntha-to-sq-ft/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.mycalcbox.in/unit-converter/cent-to-sq-ft/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>

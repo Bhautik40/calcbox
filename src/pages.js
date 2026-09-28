@@ -116,6 +116,24 @@ module.exports = function (C) {
     });
   });
 
+  /* ---------- Home loan eligibility by salary ---------- */
+  [30000, 40000, 50000, 60000, 75000, 100000].forEach(inc => {
+    const vals = { inc: String(inc), ex: '0', r: '8.5', n: '20', f: '50' };
+    const base = run('eligibility', vals), amt = inr(inc);
+    P.push({
+      tool: 'eligibility', slug: inc + '-salary', vals, group: 'Home Loan Eligibility by Salary',
+      h1: 'Home Loan on ' + amt + ' Salary', desc: 'How much you can borrow',
+      title: 'How Much Home Loan Can I Get on ' + amt + ' Salary? | CalcBox',
+      meta: 'With a ' + amt + ' monthly salary you can get a home loan of about ' + base.big + ' at 8.5% for 20 years, with no other EMIs. See other tenures and rates.',
+      big: base.big, unit: ' loan',
+      answer: 'With a net monthly salary of ' + amt + ' and no other EMIs, banks usually allow an EMI of up to ' + row(base, 'Max EMI you can pay') + '. At 8.5% for 20 years, that means a home loan of about ' + base.big + ', enough for a property of around ' + row(base, 'Property you can buy (20% down)') + ' with a 20% down payment.',
+      tables: [
+        { h: 'Eligible loan by tenure (8.5%)', head: ['Tenure', 'Eligible loan', 'EMI'], rows: [10, 15, 20, 25, 30].map(y => { const q = run('eligibility', Object.assign({}, vals, { n: String(y) })); return [y + ' years', q.big, row(q, 'Max EMI you can pay')]; }), hi: 2 },
+        { h: 'Eligible loan by interest rate (20 years)', head: ['Rate', 'Eligible loan', 'Property value'], rows: [7.5, 8, 8.5, 9, 9.5].map(k => { const q = run('eligibility', Object.assign({}, vals, { r: String(k) })); return [k + '%', q.big, row(q, 'Property you can buy (20% down)')]; }), hi: 2, note: 'Assumes up to 50% of net income can go to EMIs. Banks also check credit score, age and job stability.' }
+      ]
+    });
+  });
+
   /* ---------- Units ---------- */
   const unit = (o) => P.push(Object.assign({ tool: 'unit', group: 'Unit Conversions' }, o));
   unit({

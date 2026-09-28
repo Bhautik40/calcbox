@@ -90,6 +90,12 @@
 
   /* ---------- icons (24px line) ---------- */
   var I = {
+    hra: '<path d="M3 11l9-7 9 7"/><path d="M5 9.5V20h14V9.5"/><circle cx="10.5" cy="14" r="2"/><path d="M12.5 14H16v2"/>',
+    epf: '<path d="M3 10l9-6 9 6"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8"/><path d="M3 20h18"/>',
+    nps: '<path d="M12 3a8 8 0 018 8H4a8 8 0 018-8z"/><path d="M12 11v7a2 2 0 01-4 0"/>',
+    ssy: '<circle cx="12" cy="7" r="3.5"/><path d="M6 21c0-4 2.7-7 6-7s6 3 6 7"/><path d="M9.5 4.5L8 2.5M14.5 4.5L16 2.5"/>',
+    eligibility: '<path d="M3 11l9-7 9 7"/><path d="M5 9.5V20h14V9.5"/><path d="M9 15l2 2 4-4"/>',
+    prepay: '<circle cx="12" cy="12" r="9"/><path d="M12 7v10M8.5 13.5L12 17l3.5-3.5"/>',
     tax: '<rect x="4.5" y="3" width="15" height="18" rx="2"/><path d="M8.5 7.5h7M8.5 7.5h2a2.5 2.5 0 010 5h-2l4 4M8.5 10h7"/>',
     gst: '<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9.5 14l5-5"/><circle cx="9.7" cy="9.3" r=".9"/><circle cx="14.3" cy="13.7" r=".9"/>',
     emi: '<path d="M3 11l9-7 9 7"/><path d="M5 9.5V20h14V9.5"/><path d="M10 20v-5h4v5"/>',
@@ -176,7 +182,7 @@
       meta: 'Calculate income tax for FY 2026-27 (AY 2027-28) under the new and old regime. See which regime saves more, with 87A rebate, cess and surcharge.',
       kw: 'income tax itr new regime old regime salary tax slab 87a rebate fy 2026-27 ay 2027-28 standard deduction 80c', disc: 'Estimate for resident individuals, FY 2026-27. Check with a CA before filing.',
       how: 'New regime: ₹75,000 standard deduction, slabs from 5% to 30%, no tax up to ₹12 lakh taxable (87A). Old regime: ₹50,000 standard deduction plus your deductions. 4% cess on both.',
-      related: ['hike', 'gratuity', 'ppf', 'gst'],
+      related: ['hra', 'hike', 'gratuity', 'ppf'],
       inputs: [
         { k: 'i', t: 'num', label: 'Annual income (CTC / gross)', pre: '₹', val: '1500000' },
         { k: 's', t: 'check', label: 'Salaried or pensioner', val: true },
@@ -222,7 +228,7 @@
       meta: 'Calculate your monthly loan EMI, total interest and total payment instantly. Works for home, car and personal loans.',
       kw: 'loan home car personal mortgage emi interest bank', disc: FIN,
       how: 'EMI = P × r × (1+r)ⁿ ÷ ((1+r)ⁿ − 1), where r is the monthly rate and n the number of months.',
-      related: ['si', 'ci', 'fd', 'inflation'],
+      related: ['eligibility', 'prepay', 'si', 'fd'],
       inputs: [
         { k: 'p', t: 'num', label: 'Loan amount', pre: '₹', val: '2500000' },
         { k: 'r', t: 'num', label: 'Interest rate', suf: '% p.a.', val: '8.5' },
@@ -324,7 +330,7 @@
       meta: 'Estimate your PPF maturity amount and total interest for 15 years or more with yearly deposits. Rate is editable.',
       kw: 'ppf public provident fund tax saving 80c post office', disc: 'Estimates only. PPF rates are set by the government each quarter.',
       how: 'Yearly deposits (made at the start of each year) compound annually. Maximum deposit is ₹1.5 lakh a year.',
-      related: ['sip', 'fd', 'rd', 'inflation'],
+      related: ['ssy', 'epf', 'nps', 'fd'],
       inputs: [
         { k: 'a', t: 'num', label: 'Yearly investment', pre: '₹', val: '150000' },
         { k: 'r', t: 'num', label: 'Interest rate', suf: '% p.a.', val: '7.1', half: true },
@@ -477,7 +483,7 @@
       meta: 'Estimate your gratuity from last drawn basic salary plus DA and years of service, as per the Payment of Gratuity Act formula.',
       kw: 'gratuity job resignation retirement basic salary da service', disc: FIN,
       how: 'Covered: 15 × salary × years ÷ 26 (6+ months rounds up). Not covered: 15 × salary × completed years ÷ 30.',
-      related: ['tax', 'hike', 'ppf', 'inflation'],
+      related: ['tax', 'epf', 'ppf', 'hike'],
       inputs: [
         { k: 's', t: 'num', label: 'Monthly basic + DA', pre: '₹', val: '50000' },
         { k: 'y', t: 'num', label: 'Service', suf: 'years', val: '10', half: true },
@@ -531,6 +537,148 @@
         var rows = [['Total distance', num(dist) + ' km'], ['Fuel needed', num(l) + ' L'], ['Cost per km', inr(v.p / v.m, 2)]];
         if (n > 1) rows.push(['Per person', inr(c / n)]);
         return { label: 'Fuel cost', big: inr(c, 0), rows: rows };
+      }
+    },
+
+    {
+      id: 'hra', slug: 'hra-calculator', cat: 'money', name: 'HRA Exemption', h1: 'HRA Exemption Calculator', desc: 'Tax-free part of your HRA',
+      title: 'HRA Exemption Calculator FY 2026-27 – 8 Metro Cities | CalcBox',
+      meta: 'Calculate how much of your House Rent Allowance is tax-free under the old regime for FY 2026-27, including the new 50% rule for Bengaluru, Hyderabad, Pune and Ahmedabad.',
+      kw: 'hra house rent allowance exemption rent tax 10(13a) metro old regime salary', disc: 'Old tax regime only. Estimate; check with your employer or a CA.',
+      how: 'Exempt HRA is the lowest of: HRA received, rent paid minus 10% of basic, and 50% of basic in the 8 metros (40% elsewhere).',
+      related: ['tax', 'hike', 'gratuity', 'epf'],
+      inputs: [
+        { k: 'b', t: 'num', label: 'Basic + DA (yearly)', pre: '₹', val: '600000' },
+        { k: 'h', t: 'num', label: 'HRA received (yearly)', pre: '₹', val: '240000' },
+        { k: 'r', t: 'num', label: 'Rent paid (yearly)', pre: '₹', val: '300000' },
+        { k: 'm', t: 'check', label: 'Metro: Delhi, Mumbai, Kolkata, Chennai, Bengaluru, Hyderabad, Pune, Ahmedabad', val: true }
+      ],
+      calc: function (v) {
+        var e = need(v.b > 0, 'Tax-free HRA', 'Enter your basic salary') || need(v.h >= 0, 'Tax-free HRA', 'Enter HRA received') || need(v.r >= 0, 'Tax-free HRA', 'Enter rent paid'); if (e) return e;
+        var a = v.h, b = Math.max(0, v.r - 0.1 * v.b), c = (v.m ? 0.5 : 0.4) * v.b, ex = Math.min(a, b, c);
+        return { label: 'Tax-free HRA (yearly)', big: inr(ex), sub: 'Taxable HRA: ' + inr(v.h - ex), rows: [['HRA received', inr(a)], ['Rent − 10% of basic', inr(b)], [(v.m ? '50%' : '40%') + ' of basic', inr(c)], ['Tax-free per month', inr(ex / 12, 0)]], bars: [{ l: 'Tax-free', v: ex }, { l: 'Taxable', v: v.h - ex }] };
+      }
+    },
+    {
+      id: 'epf', slug: 'epf-calculator', cat: 'money', name: 'EPF', h1: 'EPF Calculator', desc: 'PF balance at retirement',
+      title: 'EPF Calculator – PF Balance at Retirement (8.25%) | CalcBox',
+      meta: 'Estimate your Employees’ Provident Fund balance at retirement with employee and employer contributions, salary hikes and the 8.25% EPF interest rate.',
+      kw: 'epf pf provident fund epfo retirement corpus employee employer contribution uan', disc: FIN,
+      how: 'You put in 12% of basic + DA. Your employer puts 3.67% into EPF (the rest goes to EPS pension). Interest is added yearly.',
+      related: ['ppf', 'nps', 'gratuity', 'hike'],
+      inputs: [
+        { k: 'w', t: 'num', label: 'Monthly basic + DA', pre: '₹', val: '30000' },
+        { k: 'age', t: 'num', label: 'Current age', suf: 'years', val: '25', half: true },
+        { k: 'ret', t: 'num', label: 'Retire at', suf: 'years', val: '58', half: true },
+        { k: 'bal', t: 'num', label: 'Current EPF balance', pre: '₹', val: '0' },
+        { k: 'g', t: 'num', label: 'Yearly salary hike', suf: '%', val: '5', half: true },
+        { k: 'r', t: 'num', label: 'EPF interest', suf: '%', val: '8.25', half: true }
+      ],
+      calc: function (v) {
+        var e = need(v.w > 0, 'EPF at retirement', 'Enter your basic salary') || need(v.age >= 15 && v.ret > v.age && v.ret <= 70, 'EPF at retirement', 'Check your age and retirement age') || need(v.r >= 0 && v.r <= 20, 'EPF at retirement', 'Enter the interest rate'); if (e) return e;
+        var yrs = Math.round(v.ret - v.age), bal = isFinite(v.bal) ? Math.max(0, v.bal) : 0, start = bal, w = v.w, g = isFinite(v.g) ? v.g : 0, mine = 0, emp = 0;
+        for (var y = 0; y < yrs; y++) {
+          var monthSum = 0;
+          for (var m = 0; m < 12; m++) {
+            var ee = 0.12 * w, er = 0.12 * w - Math.min(0.0833 * w, 1250);
+            bal += ee + er; mine += ee; emp += er; monthSum += bal;
+          }
+          bal += monthSum * v.r / 1200; w *= 1 + g / 100;
+        }
+        var contrib = start + mine + emp;
+        return { label: 'EPF at retirement', big: inr(bal), sub: sub(bal), rows: [['Your contribution', inr(mine)], ['Employer contribution', inr(emp)], ['Interest earned', inr(bal - contrib)], ['Years', num(yrs, 0)]], bars: growthBars(contrib, bal - contrib, 'Contributions', 'Interest') };
+      }
+    },
+    {
+      id: 'nps', slug: 'nps-calculator', cat: 'money', name: 'NPS', h1: 'NPS Calculator', desc: 'Pension and lump sum at 60',
+      title: 'NPS Calculator – Pension & Lump Sum at Retirement | CalcBox',
+      meta: 'Estimate your National Pension System corpus, tax-free lump sum and monthly pension at 60, using the latest rule that allows up to 80% as lump sum.',
+      kw: 'nps national pension system retirement pension annuity lump sum tier 1', disc: 'Estimate only. Returns are market-linked; withdrawal rules can change.',
+      how: 'Monthly contributions grow at the expected return. At retirement, part of the corpus buys an annuity (pension) and the rest is paid as a lump sum.',
+      related: ['epf', 'ppf', 'sip', 'inflation'],
+      inputs: [
+        { k: 'a', t: 'num', label: 'Monthly contribution', pre: '₹', val: '5000' },
+        { k: 'age', t: 'num', label: 'Current age', suf: 'years', val: '30', half: true },
+        { k: 'ret', t: 'num', label: 'Retire at', suf: 'years', val: '60', half: true },
+        { k: 'r', t: 'num', label: 'Expected return', suf: '% p.a.', val: '10' },
+        { k: 'an', t: 'num', label: 'Used for pension (annuity)', suf: '%', val: '20', half: true },
+        { k: 'ar', t: 'num', label: 'Annuity rate', suf: '%', val: '6', half: true }
+      ],
+      calc: function (v) {
+        var e = need(v.a > 0, 'Total corpus', 'Enter a monthly amount') || need(v.age >= 18 && v.ret > v.age && v.ret <= 75, 'Total corpus', 'Check your age and retirement age') || need(v.r >= 0 && v.r <= 30, 'Total corpus', 'Enter expected return'); if (e) return e;
+        var N = Math.round((v.ret - v.age) * 12), i = v.r / 1200, c = 0;
+        for (var k = 0; k < N; k++) c = (c + v.a) * (1 + i);
+        var an = Math.min(100, Math.max(0, isFinite(v.an) ? v.an : 20)), ar = isFinite(v.ar) ? v.ar : 6, inv = v.a * N;
+        return { label: 'Total corpus at ' + num(v.ret, 0), big: inr(c), sub: sub(c), rows: [['Lump sum (' + num(100 - an) + '%)', inr(c * (1 - an / 100))], ['Monthly pension (approx.)', inr(c * an / 100 * ar / 1200, 0)], ['You invest', inr(inv)], ['Returns', inr(c - inv)]], bars: growthBars(inv, c - inv) };
+      }
+    },
+    {
+      id: 'ssy', slug: 'sukanya-samriddhi-calculator', cat: 'money', name: 'Sukanya Samriddhi', h1: 'Sukanya Samriddhi Calculator', desc: 'SSY maturity for your daughter',
+      title: 'Sukanya Samriddhi Yojana (SSY) Calculator – 8.2% | CalcBox',
+      meta: 'Calculate the Sukanya Samriddhi Yojana maturity amount at the current 8.2% rate. Deposit for 15 years, maturity after 21 years, fully tax-free.',
+      kw: 'ssy sukanya samriddhi yojana girl child daughter post office scheme 80c', disc: 'Estimate only. SSY rates are set by the government each quarter.',
+      how: 'You deposit every year for 15 years. Interest compounds yearly and the account matures 21 years after opening.',
+      related: ['ppf', 'fd', 'rd', 'sip'],
+      inputs: [
+        { k: 'a', t: 'num', label: 'Yearly deposit', pre: '₹', val: '150000' },
+        { k: 'r', t: 'num', label: 'Interest rate', suf: '% p.a.', val: '8.2', half: true },
+        { k: 'y', t: 'num', label: 'Start year', val: function () { return String(new Date().getFullYear()); }, half: true }
+      ],
+      calc: function (v) {
+        var e = need(v.a >= 250, 'Maturity value', 'Minimum ₹250 a year') || need(v.r >= 0 && v.r <= 20, 'Maturity value', 'Enter an interest rate'); if (e) return e;
+        var r = v.r / 100, m = 0;
+        for (var k = 0; k < 15; k++) m += v.a * Math.pow(1 + r, 21 - k);
+        var inv = v.a * 15, rows = [['Total deposited (15 yrs)', inr(inv)], ['Interest earned', inr(m - inv)]];
+        if (isFinite(v.y) && v.y > 1900) rows.push(['Matures in', String(Math.round(v.y) + 21)]);
+        if (v.a > 150000) rows.push(['Note', 'Limit is ₹1.5 lakh/yr']);
+        return { label: 'Maturity value (21 years)', big: inr(m), sub: sub(m), rows: rows, bars: growthBars(inv, m - inv, 'Deposited', 'Interest') };
+      }
+    },
+    {
+      id: 'eligibility', slug: 'home-loan-eligibility-calculator', cat: 'money', name: 'Loan Eligibility', h1: 'Home Loan Eligibility Calculator', desc: 'How much loan you can get',
+      title: 'Home Loan Eligibility Calculator – Based on Salary | CalcBox',
+      meta: 'Find out how much home loan you can get based on your monthly income, existing EMIs, interest rate and tenure. See the property value you can afford.',
+      kw: 'home loan eligibility how much loan salary income foir afford house property', disc: FIN,
+      how: 'Banks usually allow total EMIs up to about 50% of your net monthly income. Your eligible loan is what that EMI can repay over the tenure.',
+      related: ['emi', 'prepay', 'hra', 'tax'],
+      inputs: [
+        { k: 'inc', t: 'num', label: 'Net monthly income', pre: '₹', val: '80000' },
+        { k: 'ex', t: 'num', label: 'Existing EMIs (monthly)', pre: '₹', val: '0' },
+        { k: 'r', t: 'num', label: 'Interest rate', suf: '% p.a.', val: '8.5', half: true },
+        { k: 'n', t: 'num', label: 'Tenure', suf: 'years', val: '20', half: true },
+        { k: 'f', t: 'num', label: 'Max EMI share of income', suf: '%', val: '50' }
+      ],
+      calc: function (v) {
+        var e = need(v.inc > 0, 'Eligible loan', 'Enter your monthly income') || need(v.r > 0 && v.r < 30, 'Eligible loan', 'Enter an interest rate') || need(v.n > 0 && v.n <= 30, 'Eligible loan', 'Enter tenure'); if (e) return e;
+        var f = isFinite(v.f) ? v.f : 50, ex = isFinite(v.ex) ? Math.max(0, v.ex) : 0, emi = v.inc * f / 100 - ex;
+        if (emi <= 0) return { label: 'Eligible loan', err: 'Existing EMIs already use your limit' };
+        var i = v.r / 1200, N = Math.round(v.n * 12), L = emi * (1 - Math.pow(1 + i, -N)) / i;
+        return { label: 'Eligible loan', big: inr(L), sub: sub(L), rows: [['Max EMI you can pay', inr(emi)], ['Property you can buy (20% down)', inr(L / 0.8)], ['Down payment needed', inr(L / 0.8 - L)], ['Total interest', inr(emi * N - L)]] };
+      }
+    },
+    {
+      id: 'prepay', slug: 'loan-prepayment-calculator', cat: 'money', name: 'Loan Prepayment', h1: 'Loan Prepayment Calculator', desc: 'Interest saved by prepaying',
+      title: 'Home Loan Prepayment Calculator – Interest Saved | CalcBox',
+      meta: 'See how much interest you save by making a part-prepayment on your home loan, and whether to reduce your EMI or your tenure.',
+      kw: 'loan prepayment part payment foreclosure home loan reduce emi tenure interest saved', disc: FIN,
+      how: 'A prepayment reduces your outstanding loan. Keeping the same EMI shortens the tenure (saves more interest); keeping the tenure lowers the EMI.',
+      related: ['emi', 'eligibility', 'ci', 'sip'],
+      inputs: [
+        { k: 'p', t: 'num', label: 'Outstanding loan', pre: '₹', val: '3000000' },
+        { k: 'r', t: 'num', label: 'Interest rate', suf: '% p.a.', val: '8.5', half: true },
+        { k: 'n', t: 'num', label: 'Remaining tenure', suf: 'years', val: '18', half: true },
+        { k: 'x', t: 'num', label: 'Prepayment amount', pre: '₹', val: '300000' },
+        { k: 'm', t: 'seg', label: 'After prepaying', val: 't', opts: [['t', 'Keep EMI, cut tenure'], ['e', 'Keep tenure, cut EMI']] }
+      ],
+      calc: function (v) {
+        var e = need(v.p > 0, 'Interest saved', 'Enter the outstanding loan') || need(v.r > 0 && v.r < 30, 'Interest saved', 'Enter an interest rate') || need(v.n > 0 && v.n <= 40, 'Interest saved', 'Enter remaining tenure') || need(v.x > 0 && v.x < v.p, 'Interest saved', 'Prepayment must be less than the loan'); if (e) return e;
+        var i = v.r / 1200, N = Math.round(v.n * 12), emi = v.p * i * Math.pow(1 + i, N) / (Math.pow(1 + i, N) - 1), P2 = v.p - v.x;
+        if (v.m === 'e') {
+          var e2 = P2 * i * Math.pow(1 + i, N) / (Math.pow(1 + i, N) - 1), sv = (emi - e2) * N - v.x;
+          return { label: 'Interest saved', big: inr(sv), rows: [['Old EMI', inr(emi, 0)], ['New EMI', inr(e2, 0)], ['EMI lower by', inr(emi - e2, 0)], ['Tenure', plural(N, 'month')]] };
+        }
+        var n2 = Math.ceil(-Math.log(1 - P2 * i / emi) / Math.log(1 + i)), sv2 = emi * N - emi * n2 - v.x;
+        return { label: 'Interest saved', big: inr(sv2), rows: [['EMI (same)', inr(emi, 0)], ['Old tenure', plural(N, 'month')], ['New tenure', plural(n2, 'month')], ['Loan ends earlier by', ymdText({ y: Math.floor((N - n2) / 12), m: (N - n2) % 12, d: 0 }).replace(', 0 days', '')]] };
       }
     },
 
@@ -864,6 +1012,8 @@
     }
   ];
 
+  var ORDER = ['gst', 'tax', 'hra', 'emi', 'eligibility', 'prepay', 'sip', 'lumpsum', 'fd', 'rd', 'ppf', 'epf', 'nps', 'ssy'];
+  T.sort(function (a, b) { var x = ORDER.indexOf(a.id), y = ORDER.indexOf(b.id); return (x < 0 ? 99 : x) - (y < 0 ? 99 : y); });
   var byId = {}; T.forEach(function (t) { byId[t.id] = t; });
 
   /* ---------- shared renderers ---------- */

@@ -10,6 +10,36 @@ module.exports = {
     ['Is income up to ₹12 lakh tax-free?', 'Yes, under the new regime for FY 2026-27, the Section 87A rebate makes taxable income up to ₹12 lakh tax-free. Salaried people also get a ₹75,000 standard deduction, so salary up to ₹12.75 lakh pays no tax.'],
     ['What is the 4% cess?', 'Health and Education Cess is 4% of your income tax (plus surcharge, if any). It is added to every taxpayer’s final tax.']
   ],
+  hra: [
+    ['Which cities count as metro for HRA from FY 2026-27?', 'Eight cities get the 50% limit: Delhi, Mumbai, Kolkata, Chennai, Bengaluru, Hyderabad, Pune and Ahmedabad. All other cities use 40% of basic.'],
+    ['Can I claim HRA in the new tax regime?', 'No. HRA exemption is only available under the old tax regime.'],
+    ['Do I need my landlord’s PAN?', 'Usually yes, if your yearly rent is more than ₹1 lakh. Keep rent receipts or a rent agreement as proof.']
+  ],
+  epf: [
+    ['What is the EPF interest rate?', 'EPFO declared 8.25% for FY 2025-26. The rate is announced every year, so change it in the calculator if it moves.'],
+    ['How much does my employer put into EPF?', 'Your employer contributes 12% of basic + DA, but 8.33% (up to ₹1,250 a month) goes to the EPS pension scheme. The rest, usually 3.67%, goes to your EPF.'],
+    ['Is EPF withdrawal tax-free?', 'Yes, after 5 years of continuous service, EPF withdrawals are generally tax-free.']
+  ],
+  nps: [
+    ['How much of NPS can I withdraw at 60?', 'Under the rules notified in December 2025, non-government subscribers can take up to 80% as a lump sum and must use at least 20% to buy an annuity (pension).'],
+    ['What return should I expect from NPS?', 'Long-term NPS returns have typically been around 9–12% depending on the equity share. Returns are market-linked and not guaranteed.'],
+    ['What tax benefit does NPS give?', 'In the old regime you can claim up to ₹50,000 extra under Section 80CCD(1B). Employer contributions to NPS get a deduction in both regimes, within limits.']
+  ],
+  ssy: [
+    ['What is the Sukanya Samriddhi interest rate?', 'The rate is 8.2% for the July–September 2026 quarter. The government reviews it every quarter.'],
+    ['How long do I deposit in SSY?', 'You deposit for 15 years from opening. The account matures 21 years after opening, and interest keeps growing in between.'],
+    ['Who can open an SSY account?', 'Parents or guardians of a girl child below 10 years. Up to two accounts per family, with a minimum ₹250 and maximum ₹1.5 lakh a year.']
+  ],
+  eligibility: [
+    ['How is home loan eligibility calculated?', 'Banks check how much EMI you can afford, usually up to 50% of net monthly income minus existing EMIs, then work out the loan that EMI can repay.'],
+    ['How much home loan can I get on ₹50,000 salary?', 'At 8.5% for 20 years with no other EMIs, about ₹28.8 lakh. Your credit score and the bank’s rules can change this.'],
+    ['How can I increase my eligibility?', 'Add a co-applicant with income, choose a longer tenure, close small loans and keep a credit score above 750.']
+  ],
+  prepay: [
+    ['Should I reduce EMI or tenure after prepaying?', 'Reducing tenure saves much more interest. Reducing EMI helps if you want a lower monthly outgo.'],
+    ['Is there a penalty for prepaying a home loan?', 'For floating-rate home loans taken by individuals, banks in India cannot charge prepayment penalties. Fixed-rate loans may have charges.'],
+    ['When is the best time to prepay?', 'Early in the loan, because most of each EMI then goes towards interest. Prepaying in the first years saves the most.']
+  ],
   emi: [
     ['How is EMI calculated?', 'EMI = P × r × (1+r)ⁿ ÷ ((1+r)ⁿ − 1), where P is the loan amount, r is the monthly interest rate and n is the number of months.'],
     ['Does a longer tenure reduce EMI?', 'Yes, a longer tenure lowers the monthly EMI, but you pay much more interest in total over the life of the loan.'],
