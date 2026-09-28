@@ -1,0 +1,15 @@
+{
+  "name": "calcbox",
+  "version": "1.0.0",
+  "description": "Quick calculators. Instant answers. A static site with 31 calculators. It has no build dependencies, no framework and no sign-up.",
+  "main": "build.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "esbuild": "^0.25.12"
+  }
+}

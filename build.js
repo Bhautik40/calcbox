@@ -35,8 +35,10 @@ function hash(s) { return crypto.createHash('md5').update(s).digest('hex').slice
 
 fs.rmSync(OUT, { recursive: true, force: true });
 const assets = {};
+let esb = null; try { esb = require('esbuild'); } catch (e) { }
 for (const f of ['core.js', 'app.js', 'style.css']) {
-  const s = fs.readFileSync(path.join(__dirname, 'src', f), 'utf8');
+  let s = fs.readFileSync(path.join(__dirname, 'src', f), 'utf8');
+  if (esb && !SPA) s = esb.transformSync(s, { loader: f.endsWith('.css') ? 'css' : 'js', minify: true, target: f.endsWith('.css') ? ['chrome80', 'safari13'] : 'es2018' }).code;
   write('assets/' + f, s);
   assets[f] = 'assets/' + f + '?v=' + hash(s);
 }
@@ -98,7 +100,7 @@ function footer(root) {
   return `<footer class="foot"><div class="wrap">
 <div class="foot-grid">${groups}</div>
 <div class="foot-bottom"><span>© ${YEAR} CalcBox · Quick calculators. Instant answers.</span>
-<nav class="foot-links" aria-label="Site"><a href="${link(root, 'about')}">About</a><a href="${link(root, 'privacy-policy')}">Privacy Policy</a><a href="${link(root, 'contact')}">Contact</a><a href="${link(root, 'terms')}">Terms</a></nav></div>
+<nav class="foot-links" aria-label="Site"><a href="${link(root, 'calculations')}">All calculations</a><a href="${link(root, 'about')}">About</a><a href="${link(root, 'privacy-policy')}">Privacy Policy</a><a href="${link(root, 'contact')}">Contact</a><a href="${link(root, 'terms')}">Terms</a></nav></div>
 <p class="made">Made with <span class="heart" aria-label="love">❤️</span> by Bhautik &amp; Niraj</p>
 </div></footer>`;
 }
@@ -142,6 +144,7 @@ ${cats.map(([id, name]) => `<button type="button" role="tab" data-cat="${id}" ar
 </nav>
 ${blocks}
 <p id="empty" class="empty" hidden>No match. Try “loan”, “date” or “tax”.</p>
+<section class="related home-pop" aria-labelledby="h-hpop"><h2 id="h-hpop">Popular calculations</h2><div class="chips wrapchips">${['emi/30-lakh-home-loan','tax/15-lakh-salary','tax/12-lakh-salary','emi/50-lakh-home-loan','sip/10000-per-month','sip/5000-per-month','emi/10-lakh-car-loan','fd/5-lakh-for-5-years','ppf/1-5-lakh-per-year','unit/acre-to-sq-ft','unit/cm-to-feet','unit/celsius-to-fahrenheit'].map(k => { const [tid, sl] = k.split('/'); const x = PAGES.find(q => q.tool === tid && q.slug === sl); return x ? `<a class="chip" href="${link(root, C.byId[tid].slug + '/' + sl)}"><span>${esc(x.h1)}</span></a>` : ''; }).join('')}<a class="chip more" href="${link(root, 'calculations')}"><span>See all ${PAGES.length} →</span></a></div></section>
 ${ad('home-bottom')}
 </main>`;
   write('index.html', page({
@@ -237,6 +240,18 @@ ${ad('in-content')}
   }));
 }
 
+/* ===== HUB: all calculations ===== */
+{
+  const root = '../', groups = [];
+  PAGES.forEach(x => { let g = groups.find(q => q.name === x.group); if (!g) groups.push(g = { name: x.group, tool: x.tool, items: [] }); g.items.push(x); });
+  const body = `<main class="wrap"><article class="hub">
+<h1>All calculations</h1>
+<p class="hub-sub">Ready answers for the most common questions. Tap one to see the full table and try your own numbers.</p>
+${groups.map(g => `<section><h2>${svg(icons[g.tool])}${esc(g.name)}</h2><ul>${g.items.map(x => `<li><a href="${link(root, C.byId[x.tool].slug + '/' + x.slug)}"><span>${esc(x.h1)}</span><b>${esc(x.big)}${x.tool === 'emi' ? '/mo' : ''}</b></a></li>`).join('')}</ul></section>`).join('')}
+</article></main>`;
+  write('calculations/index.html', page({ title: 'All Calculations – EMI, Income Tax, SIP, FD & Conversions | CalcBox', desc: 'Ready answers for common questions: home loan EMI by amount, income tax by salary for FY 2026-27, SIP returns, FD maturity, PPF and land and height conversions.', canon: 'calculations/', root, body, pageType: 'info' }));
+}
+
 /* ===== INFO PAGES ===== */
 const info = {
   about: {
@@ -325,7 +340,7 @@ write('manifest.webmanifest', JSON.stringify({
   background_color: '#fafaf8', theme_color: '#E4570B',
   icons: [{ src: '/favicon.svg', sizes: 'any', type: 'image/svg+xml' }, { src: '/icon-192.png', sizes: '192x192', type: 'image/png' }, { src: '/icon-512.png', sizes: '512x512', type: 'image/png' }]
 }, null, 2));
-const urls = ['', ...tools.map(t => t.slug + '/'), ...PAGES.map(x => C.byId[x.tool].slug + '/' + x.slug + '/'), ...Object.keys(info).map(s => s + '/')];
+const urls = ['', ...tools.map(t => t.slug + '/'), ...PAGES.map(x => C.byId[x.tool].slug + '/' + x.slug + '/'), 'calculations/', ...Object.keys(info).map(s => s + '/')];
 write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map(u => `  <url><loc>${SITE_URL}/${u}</loc><changefreq>monthly</changefreq><priority>${u === '' ? '1.0' : info[u.slice(0, -1)] ? '0.3' : '0.8'}</priority></url>`).join('\n')}
