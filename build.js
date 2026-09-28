@@ -22,6 +22,7 @@ const VIEWS = [];
 const IX = PREVIEW ? 'index.html' : '';
 const C = require('./src/core.js');
 const FAQS = require('./src/faqs.js');
+const PAGES = require('./src/pages.js')(C);
 const { esc, svg, tools, cats, icons, ui } = C;
 
 function write(rel, content) {
@@ -102,10 +103,10 @@ function footer(root) {
 </div></footer>`;
 }
 
-function page({ title, desc, canon, root, body, pageType, toolId, jsonld, noindex, scripts = true }) {
-  if (SPA) { VIEWS.push({ id: canon.replace(/\/$/, '') || 'home', title, pageType, toolId, body }); return ''; }
+function page({ title, desc, canon, root, body, pageType, toolId, jsonld, noindex, preset, scripts = true }) {
+  if (SPA) { VIEWS.push({ id: canon.replace(/\/$/, '') || 'home', title, pageType, toolId, preset, body }); return ''; }
   return `${head({ title, desc, canon, root, jsonld, noindex })}
-<body data-page="${pageType}" data-root="${root}" data-ix="${IX}"${toolId ? ` data-tool="${toolId}"` : ''}>
+<body data-page="${pageType}" data-root="${root}" data-ix="${IX}"${toolId ? ` data-tool="${toolId}"` : ''}${preset ? ` data-preset="${esc(JSON.stringify(preset))}"` : ''}>
 ${header(root)}
 ${body}
 ${footer(root)}
@@ -178,6 +179,7 @@ ${ad('below-result')}
 <p class="how"><b>How it works</b>${esc(t.how)}</p>
 ${(FAQS[t.id] || []).length ? `<section class="faq" aria-labelledby="h-faq"><h2 id="h-faq">FAQs</h2>${FAQS[t.id].map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('')}</section>` : ''}
 ${ad('in-content')}
+${PAGES.some(x => x.tool === t.id) ? `<section class="related" aria-labelledby="h-pop"><h2 id="h-pop">Popular calculations</h2><div class="chips">${PAGES.filter(x => x.tool === t.id).map(x => `<a class="chip" href="${link(root, t.slug + '/' + x.slug)}"><span>${esc(x.h1)}</span></a>`).join('')}</div></section>` : ''}
 <section class="related" aria-labelledby="h-rel"><h2 id="h-rel">Related tools</h2><div class="chips">${rel}</div></section>
 </main>`;
   write(t.slug + '/index.html', page({
@@ -190,6 +192,48 @@ ${ad('in-content')}
       '@context': 'https://schema.org', '@type': 'FAQPage',
       mainEntity: FAQS[t.id].map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } }))
     }] : [])
+  }));
+}
+
+/* ===== ANSWER PAGES (search-targeted presets) ===== */
+for (const pg of PAGES) {
+  const t = C.byId[pg.tool], root = '../../', path = t.slug + '/' + pg.slug + '/';
+  const v = Object.assign(C.defaults(t), pg.vals); if (t.fix) t.fix(v);
+  const r = t.calc(C.parse(t, v));
+  const tables = pg.tables.map(tb => `<section class="ptable"><h2>${esc(tb.h)}</h2><div class="tbl-wrap"><table><thead><tr>${tb.head.map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${tb.rows.map((rw, i) => `<tr${i === tb.hi ? ' class="hi"' : ''}>${rw.map(c => `<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>${tb.note ? `<p class="tnote">${esc(tb.note)}</p>` : ''}</section>`).join('');
+  const others = PAGES.filter(x => x !== pg && x.tool === pg.tool).concat(PAGES.filter(x => x.tool !== pg.tool)).slice(0, 8)
+    .map(x => `<a class="chip" href="${link(root, C.byId[x.tool].slug + '/' + x.slug)}"><span>${esc(x.h1)}</span></a>`).join('');
+  const body = `<main class="wrap">
+<nav class="crumbs" aria-label="Breadcrumb"><a href="${homeLink(root)}">All tools</a><span aria-hidden="true">/</span><a href="${link(root, t.slug)}">${esc(t.h1)}</a></nav>
+${ad('tool-top')}
+<div class="tool-head"><div class="ic">${svg(icons[t.id])}</div><div><h1>${esc(pg.h1)}</h1><p>${esc(pg.desc)}</p></div></div>
+<section class="answer"><div class="ans-big">${esc(pg.big)}<span>${esc(pg.unit)}</span></div><p>${esc(pg.answer)}</p></section>
+<div class="ptables">${tables}</div>
+<h2 class="try">Try your own numbers</h2>
+<div class="tool-grid">
+<form class="panel" id="form" autocomplete="off" novalidate>${C.renderForm(t, v)}</form>
+<div class="res-col">
+<section class="result" aria-label="Result"><div id="res" aria-live="polite">${C.renderResult(r)}</div>
+<div class="actions">
+<button class="btn" type="button" data-act="copy">${svg(ui.copy)}<span>Copy</span></button>
+<button class="btn" type="button" data-act="share">${svg(ui.share)}<span>Share</span></button>
+<button class="btn" type="button" data-act="pin" aria-pressed="false">${svg(ui.star)}<span>Pin</span></button>
+</div></section>
+${t.disc ? `<p class="disc">${esc(t.disc)}</p>` : ''}
+${ad('below-result')}
+</div>
+</div>
+<p class="how"><b>How it works</b>${esc(t.how)}</p>
+${ad('in-content')}
+<section class="related" aria-labelledby="h-rel"><h2 id="h-rel">Popular calculations</h2><div class="chips">${others}</div></section>
+</main>`;
+  write(path + 'index.html', page({
+    title: pg.title, desc: pg.meta, canon: path, root, body, pageType: 'tool', toolId: t.id, preset: pg.vals,
+    jsonld: [{ '@context': 'https://schema.org', '@type': 'WebPage', name: pg.h1, url: SITE_URL + '/' + path, description: pg.meta,
+      breadcrumb: { '@type': 'BreadcrumbList', itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'CalcBox', item: SITE_URL + '/' },
+        { '@type': 'ListItem', position: 2, name: t.h1, item: SITE_URL + '/' + t.slug + '/' },
+        { '@type': 'ListItem', position: 3, name: pg.h1, item: SITE_URL + '/' + path }] } }]
   }));
 }
 
@@ -281,7 +325,7 @@ write('manifest.webmanifest', JSON.stringify({
   background_color: '#fafaf8', theme_color: '#E4570B',
   icons: [{ src: '/favicon.svg', sizes: 'any', type: 'image/svg+xml' }, { src: '/icon-192.png', sizes: '192x192', type: 'image/png' }, { src: '/icon-512.png', sizes: '512x512', type: 'image/png' }]
 }, null, 2));
-const urls = ['', ...tools.map(t => t.slug + '/'), ...Object.keys(info).map(s => s + '/')];
+const urls = ['', ...tools.map(t => t.slug + '/'), ...PAGES.map(x => C.byId[x.tool].slug + '/' + x.slug + '/'), ...Object.keys(info).map(s => s + '/')];
 write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map(u => `  <url><loc>${SITE_URL}/${u}</loc><changefreq>monthly</changefreq><priority>${u === '' ? '1.0' : info[u.slice(0, -1)] ? '0.3' : '0.8'}</priority></url>`).join('\n')}
@@ -306,7 +350,7 @@ console.log(`Built ${urls.length + 1} pages into ${path.relative(process.cwd(), 
 /* ===== ONE-FILE PREVIEW (--spa) ===== */
 if (SPA) {
   const rd = f => fs.readFileSync(path.join(__dirname, 'src', f), 'utf8');
-  const tpl = VIEWS.map(v => `<template id="v-${v.id}" data-type="${v.pageType}" data-title="${esc(v.title)}"${v.toolId ? ` data-tool="${v.toolId}"` : ''}>${v.body}</template>`).join('\n');
+  const tpl = VIEWS.map(v => `<template id="v-${v.id}" data-type="${v.pageType}" data-title="${esc(v.title)}"${v.toolId ? ` data-tool="${v.toolId}"` : ''}${v.preset ? ` data-preset="${esc(JSON.stringify(v.preset))}"` : ''}>${v.body}</template>`).join('\n');
   const html = `<title>CalcBox</title>
 <script>try{var t=localStorage.getItem('cb_theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <style>${rd('style.css')}</style>

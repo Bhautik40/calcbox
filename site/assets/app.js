@@ -113,6 +113,7 @@
 
     // start values: defaults + URL params
     var v = C.defaults(t), p = new URLSearchParams(location.search), fromUrl = false;
+    try { var pre = JSON.parse(B.getAttribute('data-preset') || 'null'); if (pre) Object.keys(pre).forEach(function (k) { v[k] = pre[k]; }); } catch (e) { }
     t.inputs.forEach(function (i) {
       if (i.t !== 'btn' && p.has(i.k)) { v[i.k] = i.t === 'check' ? p.get(i.k) === '1' : p.get(i.k).slice(0, 3000); fromUrl = true; }
     });
@@ -219,6 +220,7 @@
       d.title = tp.getAttribute('data-title');
       var type = tp.getAttribute('data-type');
       B.setAttribute('data-page', type);
+      if (tp.hasAttribute('data-preset')) B.setAttribute('data-preset', tp.getAttribute('data-preset')); else B.removeAttribute('data-preset');
       window.scrollTo(0, 0);
       if (type === 'home') home(); else if (type === 'tool') tool(tp.getAttribute('data-tool'));
     };
