@@ -2,3 +2,4 @@ preview/
 spa/
 node_modules/
 .DS_Store
+.og-jobs.json

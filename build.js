@@ -54,7 +54,8 @@ function ad(name) {
   return `<!-- AD SLOT: ${name} -->`;
 }
 
-function head({ title, desc, canon, root, jsonld, noindex }) {
+const OG_JOBS = [];
+function head({ title, desc, canon, root, jsonld, noindex, og }) {
   const url = SITE_URL + '/' + canon;
   return `<!doctype html>
 <html lang="en-IN">
@@ -69,7 +70,9 @@ ${noindex ? '<meta name="robots" content="noindex">' : `<link rel="canonical" hr
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:url" content="${esc(url)}">
-<meta property="og:image" content="${SITE_URL}/og.png">
+<meta property="og:image" content="${SITE_URL}/${og ? og.file : 'og.png'}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#fafaf8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0e0e0d" media="(prefers-color-scheme: dark)">
@@ -105,9 +108,10 @@ function footer(root) {
 </div></footer>`;
 }
 
-function page({ title, desc, canon, root, body, pageType, toolId, jsonld, noindex, preset, scripts = true }) {
+function page({ title, desc, canon, root, body, pageType, toolId, jsonld, noindex, preset, og, scripts = true }) {
+  if (og) { og.file = 'og/' + canon.replace(/\/$/, '').replace(/\//g, '--') + '.png'; if (!SPA) OG_JOBS.push(og); }
   if (SPA) { VIEWS.push({ id: canon.replace(/\/$/, '') || 'home', title, pageType, toolId, preset, body }); return ''; }
-  return `${head({ title, desc, canon, root, jsonld, noindex })}
+  return `${head({ title, desc, canon, root, jsonld, noindex, og })}
 <body data-page="${pageType}" data-root="${root}" data-ix="${IX}"${toolId ? ` data-tool="${toolId}"` : ''}${preset ? ` data-preset="${esc(JSON.stringify(preset))}"` : ''}>
 ${header(root)}
 ${body}
@@ -186,7 +190,7 @@ ${PAGES.some(x => x.tool === t.id) ? `<section class="related" aria-labelledby="
 <section class="related" aria-labelledby="h-rel"><h2 id="h-rel">Related tools</h2><div class="chips">${rel}</div></section>
 </main>`;
   write(t.slug + '/index.html', page({
-    title: t.title, desc: t.meta, canon: t.slug + '/', root, body, pageType: 'tool', toolId: t.id,
+    title: t.title, desc: t.meta, canon: t.slug + '/', root, body, pageType: 'tool', toolId: t.id, og: { icon: t.id, h: t.h1, big: t.client ? '' : r.big, sub: t.client ? t.desc : (r.label || '') },
     jsonld: [{
       '@context': 'https://schema.org', '@type': 'WebApplication', name: t.h1, url: SITE_URL + '/' + t.slug + '/',
       description: t.meta, applicationCategory: t.cat === 'money' ? 'FinanceApplication' : t.cat === 'health' ? 'HealthApplication' : 'UtilitiesApplication',
@@ -231,7 +235,7 @@ ${ad('in-content')}
 <section class="related" aria-labelledby="h-rel"><h2 id="h-rel">Popular calculations</h2><div class="chips">${others}</div></section>
 </main>`;
   write(path + 'index.html', page({
-    title: pg.title, desc: pg.meta, canon: path, root, body, pageType: 'tool', toolId: t.id, preset: pg.vals,
+    title: pg.title, desc: pg.meta, canon: path, root, body, pageType: 'tool', toolId: t.id, preset: pg.vals, og: { icon: t.id, h: pg.h1, big: pg.big + (pg.unit || ''), sub: pg.desc },
     jsonld: [{ '@context': 'https://schema.org', '@type': 'WebPage', name: pg.h1, url: SITE_URL + '/' + path, description: pg.meta,
       breadcrumb: { '@type': 'BreadcrumbList', itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'CalcBox', item: SITE_URL + '/' },
@@ -358,7 +362,8 @@ write('_headers', `/assets/*
 `);
 // optional PNG icons / og image are copied from ./static if present
 const st = path.join(__dirname, 'static');
-if (fs.existsSync(st)) for (const f of fs.readdirSync(st)) fs.copyFileSync(path.join(st, f), path.join(OUT, f));
+if (fs.existsSync(st)) fs.cpSync(st, OUT, { recursive: true });
+if (!SPA) fs.writeFileSync(path.join(__dirname, '.og-jobs.json'), JSON.stringify(OG_JOBS.map(o => Object.assign({}, o, { svg: svg(icons[o.icon]) }))));
 
 console.log(`Built ${urls.length + 1} pages into ${path.relative(process.cwd(), OUT) || OUT}`);
 
