@@ -148,7 +148,7 @@ ${cats.map(([id, name]) => `<button type="button" role="tab" data-cat="${id}" ar
 </nav>
 ${blocks}
 <p id="empty" class="empty" hidden>No match. Try “loan”, “date” or “tax”.</p>
-<section class="related home-pop" aria-labelledby="h-hpop"><h2 id="h-hpop">Popular calculations</h2><div class="chips wrapchips">${['emi/30-lakh-home-loan','tax/15-lakh-salary','tax/12-lakh-salary','emi/50-lakh-home-loan','sip/10000-per-month','sip/5000-per-month','emi/10-lakh-car-loan','fd/5-lakh-for-5-years','ppf/1-5-lakh-per-year','unit/acre-to-sq-ft','unit/cm-to-feet','unit/celsius-to-fahrenheit'].map(k => { const [tid, sl] = k.split('/'); const x = PAGES.find(q => q.tool === tid && q.slug === sl); return x ? `<a class="chip" href="${link(root, C.byId[tid].slug + '/' + sl)}"><span>${esc(x.h1)}</span></a>` : ''; }).join('')}<a class="chip more" href="${link(root, 'calculations')}"><span>See all ${PAGES.length} →</span></a></div></section>
+<section class="related home-pop" aria-labelledby="h-hpop"><h2 id="h-hpop">Popular calculations</h2><div class="chips wrapchips">${['cpc/level-6-35400-basic','emi/30-lakh-home-loan','tax/15-lakh-salary','tax/12-lakh-salary','emi/50-lakh-home-loan','sip/10000-per-month','sip/5000-per-month','emi/10-lakh-car-loan','fd/5-lakh-for-5-years','ppf/1-5-lakh-per-year','unit/acre-to-sq-ft','unit/cm-to-feet','unit/celsius-to-fahrenheit'].map(k => { const [tid, sl] = k.split('/'); const x = PAGES.find(q => q.tool === tid && q.slug === sl); return x ? `<a class="chip" href="${link(root, C.byId[tid].slug + '/' + sl)}"><span>${esc(x.h1)}</span></a>` : ''; }).join('')}<a class="chip more" href="${link(root, 'calculations')}"><span>See all ${PAGES.length} →</span></a></div></section>
 ${ad('home-bottom')}
 </main>`;
   write('index.html', page({

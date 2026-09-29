@@ -96,6 +96,7 @@
     ssy: '<circle cx="12" cy="7" r="3.5"/><path d="M6 21c0-4 2.7-7 6-7s6 3 6 7"/><path d="M9.5 4.5L8 2.5M14.5 4.5L16 2.5"/>',
     eligibility: '<path d="M3 11l9-7 9 7"/><path d="M5 9.5V20h14V9.5"/><path d="M9 15l2 2 4-4"/>',
     prepay: '<circle cx="12" cy="12" r="9"/><path d="M12 7v10M8.5 13.5L12 17l3.5-3.5"/>',
+    cpc: '<path d="M3 21h18"/><path d="M5 21V10M9.5 21V10M14.5 21V10M19 21V10"/><path d="M3 10l9-6 9 6z"/><path d="M12 4V1.8M12 1.8h3"/>',
     tax: '<rect x="4.5" y="3" width="15" height="18" rx="2"/><path d="M8.5 7.5h7M8.5 7.5h2a2.5 2.5 0 010 5h-2l4 4M8.5 10h7"/>',
     gst: '<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9.5 14l5-5"/><circle cx="9.7" cy="9.3" r=".9"/><circle cx="14.3" cy="13.7" r=".9"/>',
     emi: '<path d="M3 11l9-7 9 7"/><path d="M5 9.5V20h14V9.5"/><path d="M10 20v-5h4v5"/>',
@@ -219,6 +220,30 @@
           label: 'Tax payable · ' + best + ' regime is better', big: inr(Math.round(lo)), sub: Math.abs(newTax - oldTax) >= 1 ? 'You save ' + inr(Math.round(Math.abs(newTax - oldTax))) + ' with the ' + best.toLowerCase() + ' regime' : 'Same tax in both regimes',
           rows: [['New regime tax', inr(Math.round(newTax))], ['Old regime tax', inr(Math.round(oldTax))], ['Taxable income (new)', inr(tn)], ['Taxable income (old)', inr(to)], ['Monthly tax (' + best.toLowerCase() + ')', inr(Math.round(lo / 12))], ['Effective tax rate', pct(v.i ? lo / v.i * 100 : 0)], ['In-hand per month (approx.)', inr(Math.round((v.i - lo) / 12))]],
           bars: [{ l: 'In hand', v: v.i - lo }, { l: 'Tax', v: lo }]
+        };
+      }
+    },
+    {
+      id: 'cpc', slug: '8th-pay-commission-calculator', cat: 'money', name: '8th Pay Commission', h1: '8th Pay Commission Salary Calculator', desc: 'New salary estimate',
+      title: '8th Pay Commission Salary Calculator 2026 – Fitment Factor | CalcBox',
+      meta: 'Estimate your new basic pay and salary under the 8th Pay Commission. Choose a fitment factor (1.92, 2.28, 2.57 or 2.86) and compare with your current 7th CPC pay and DA.',
+      kw: '8th pay commission cpc salary calculator fitment factor central government employee pension basic pay da 7th cpc pay matrix level', disc: 'Estimate only. The fitment factor is not decided yet; the report is due around May 2027.',
+      how: 'New basic pay = current 7th CPC basic × fitment factor. DA usually restarts at 0% when a new pay commission begins, because it is merged into the new basic.',
+      related: ['hike', 'tax', 'hra', 'gratuity'],
+      inputs: [
+        { k: 'b', t: 'num', label: 'Current basic pay (7th CPC)', pre: '₹', val: '35400' },
+        { k: 'f', t: 'seg', label: 'Fitment factor', val: '2.28', opts: [['1.92', '1.92'], ['2.28', '2.28'], ['2.57', '2.57'], ['2.86', '2.86'], ['c', 'Other']] },
+        { k: 'cf', t: 'num', label: 'Custom fitment factor', val: '2.0', show: function (v) { return v.f === 'c'; } },
+        { k: 'da', t: 'num', label: 'Current DA', suf: '%', val: '60' }
+      ],
+      calc: function (v) {
+        var f = v.f === 'c' ? v.cf : parseFloat(v.f);
+        var e = need(v.b >= 1000, 'New basic pay', 'Enter your current basic pay') || need(f >= 1 && f <= 5, 'New basic pay', 'Enter a fitment factor between 1 and 5'); if (e) return e;
+        var da = isFinite(v.da) ? Math.max(0, v.da) : 0, nb = Math.round(v.b * f), now = v.b * (1 + da / 100), gain = nb - now;
+        return {
+          label: 'New basic pay (estimate)', big: inr(nb), sub: 'at fitment factor ' + num(f, 2),
+          rows: [['Current basic', inr(v.b)], ['Current basic + DA (' + num(da) + '%)', inr(now)], ['Increase vs basic + DA', (gain >= 0 ? '+' : '−') + inr(Math.abs(gain)) + '/month'], ['Increase in a year', (gain >= 0 ? '+' : '−') + inr(Math.abs(gain * 12))], ['Real hike on basic + DA', pct((nb / now - 1) * 100, 1)], ['Minimum pay at this factor', inr(Math.round(18000 * f))]],
+          bars: [{ l: 'Current basic + DA', v: now }, { l: 'Increase', v: Math.max(0, gain) }]
         };
       }
     },
@@ -443,7 +468,7 @@
       meta: 'Calculate your new salary after an appraisal hike, or find the hike percentage from your old and new salary.',
       kw: 'salary hike increment appraisal ctc raise pay', disc: null,
       how: 'New salary = current × (1 + hike %). Hike % = (new − current) ÷ current × 100.',
-      related: ['tax', 'percentage', 'inflation', 'gratuity'],
+      related: ['cpc', 'tax', 'percentage', 'gratuity'],
       inputs: [
         { k: 'c', t: 'num', label: 'Current salary (yearly)', pre: '₹', val: '800000' },
         { k: 'm', t: 'seg', label: 'Find', val: 'p', opts: [['p', 'New salary'], ['n', 'Hike %']] },
@@ -1012,7 +1037,7 @@
     }
   ];
 
-  var ORDER = ['gst', 'tax', 'hra', 'emi', 'eligibility', 'prepay', 'sip', 'lumpsum', 'fd', 'rd', 'ppf', 'epf', 'nps', 'ssy'];
+  var ORDER = ['gst', 'tax', 'hra', 'cpc', 'emi', 'eligibility', 'prepay', 'sip', 'lumpsum', 'fd', 'rd', 'ppf', 'epf', 'nps', 'ssy'];
   T.sort(function (a, b) { var x = ORDER.indexOf(a.id), y = ORDER.indexOf(b.id); return (x < 0 ? 99 : x) - (y < 0 ? 99 : y); });
   var byId = {}; T.forEach(function (t) { byId[t.id] = t; });
 

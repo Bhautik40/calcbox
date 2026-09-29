@@ -134,6 +134,21 @@ module.exports = function (C) {
     });
   });
 
+  /* ---------- 8th Pay Commission by pay level ---------- */
+  [[1, 18000], [2, 19900], [4, 25500], [6, 35400], [7, 44900], [8, 47600], [10, 56100]].forEach(([lvl, b]) => {
+    const vals = { b: String(b), f: '2.28', da: '60' };
+    const base = run('cpc', vals), amt = inr(b);
+    P.push({
+      tool: 'cpc', slug: 'level-' + lvl + '-' + b + '-basic', vals, group: '8th Pay Commission by Pay Level',
+      h1: '8th Pay Commission: Level ' + lvl + ' (' + amt + ')', desc: 'New basic pay at different fitment factors',
+      title: '8th Pay Commission Salary for Level ' + lvl + ' – ' + amt + ' Basic Pay | CalcBox',
+      meta: 'Level ' + lvl + ' basic pay of ' + amt + ' could become ' + base.big + ' at a 2.28 fitment factor under the 8th Pay Commission. See estimates at 1.92, 2.57 and 2.86.',
+      big: base.big, unit: ' at 2.28',
+      answer: 'Under the 7th Pay Commission, Level ' + lvl + ' starts at a basic pay of ' + amt + '. If the 8th Pay Commission uses a fitment factor of 2.28, the new basic pay would be about ' + base.big + '. The fitment factor is not decided yet, so the table shows other common estimates. DA (now 60%) usually restarts at 0% when the new pay starts.',
+      tables: [{ h: 'Level ' + lvl + ' new basic pay by fitment factor', head: ['Fitment factor', 'New basic', 'vs basic + 60% DA'], rows: ['1.83', '1.92', '2.28', '2.57', '2.86'].map(k => { const q = run('cpc', Object.assign({}, vals, { f: 'c', cf: k })); return [k, q.big, row(q, 'Increase vs basic + DA').replace('/month', '')]; }), hi: 2, note: 'Estimates only. The 8th Pay Commission report is due around May 2027.' }]
+    });
+  });
+
   /* ---------- Units ---------- */
   const unit = (o) => P.push(Object.assign({ tool: 'unit', group: 'Unit Conversions' }, o));
   unit({

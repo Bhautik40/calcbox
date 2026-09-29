@@ -40,6 +40,11 @@ module.exports = {
     ['Is there a penalty for prepaying a home loan?', 'For floating-rate home loans taken by individuals, banks in India cannot charge prepayment penalties. Fixed-rate loans may have charges.'],
     ['When is the best time to prepay?', 'Early in the loan, because most of each EMI then goes towards interest. Prepaying in the first years saves the most.']
   ],
+  cpc: [
+    ['What is the latest on the 8th Pay Commission?', 'The 8th Pay Commission was set up in November 2025 under Justice Ranjana Prakash Desai. It has 18 months to submit its report, so recommendations are expected around May 2027.'],
+    ['What is the fitment factor?', 'It is the number your current basic pay is multiplied by to get the new basic pay. The 7th Pay Commission used 2.57. The 8th Pay Commission has not decided one yet; figures from 1.83 to 2.86 are widely discussed, and unions have asked for more.'],
+    ['What happens to DA under the 8th Pay Commission?', 'When a new pay commission starts, the DA earned so far is usually merged into the new basic pay and DA restarts from 0%. That is why the real hike is smaller than the fitment factor suggests.']
+  ],
   emi: [
     ['How is EMI calculated?', 'EMI = P × r × (1+r)ⁿ ÷ ((1+r)ⁿ − 1), where P is the loan amount, r is the monthly interest rate and n is the number of months.'],
     ['Does a longer tenure reduce EMI?', 'Yes, a longer tenure lowers the monthly EMI, but you pay much more interest in total over the life of the loan.'],
